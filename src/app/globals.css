@@ -102,3 +102,11 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.tiptap ul {
+  list-style-type: disc;
+
+  li {
+    margin-left: 20px;
+  }
+}

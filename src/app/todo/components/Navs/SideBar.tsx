@@ -20,6 +20,8 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import NavUser from "./NavUser";
 import NavTasks from "./NavTasks";
+import { FindTasks } from "@/db/task/find";
+import type { Task } from "@/db/task/schema";
 
 // Menu items.
 
@@ -27,6 +29,8 @@ export async function NavSidebar() {
   const session = await auth();
   //console.log(session);
   if (!session?.user) redirect("/profile/signin");
+
+  const tasks: Task[] = (await FindTasks({ session })) || [];
 
   return (
     <Sidebar variant="floating" collapsible="icon">
@@ -57,7 +61,7 @@ export async function NavSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <NavTasks />
+        <NavTasks tasks={tasks} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser session={session} />

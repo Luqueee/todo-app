@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import store from "@/redux/store";
 import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
+import { createTask } from "./actions";
+import { useAction } from "next-safe-action/hooks";
+import CalendarField from "./Calendar";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -34,26 +38,50 @@ const formSchema = z.object({
   description: z.string().min(2, {
     message: "description must be at least 2 characters.",
   }),
-  dueDate: z.string(),
+  dueDate: z.date({
+    required_error: "A date is required.",
+  }),
 });
 export default function ModalCreateTask() {
+  const { toast } = useToast();
+
+  const { execute } = useAction(createTask, {
+    onSuccess: (data) => {
+      form.reset();
+
+      if (data.data?.success === true) {
+        toast({
+          title: "Task created successfully",
+          description: "Task created successfully",
+        });
+      }
+
+      if (data.data?.success === false) {
+        toast({
+          title: "Task creation failed",
+          description: "Task creation failed",
+          variant: "destructive",
+        });
+      }
+
+      setOpen();
+    },
+  });
+
   const [isOpen, setIsOpen] = useState(false);
 
   const listener = useSelector(
     (state: RootState) => state.tasks.isOpenModalTasks
   );
 
-  const handleOpen = () => {
-    //console.log("handleOpen", store.getState().isOpenModalTasks);
-    setIsOpen(store.getState().tasks.isOpenModalTasks);
-  };
-
   useEffect(() => {
-    handleOpen();
+    //console.log("listener", listener);
+    setIsOpen(store.getState().tasks.isOpenModalTasks);
   }, [listener]);
 
   const setOpen = () => {
     store.dispatch({ type: "HANDLE_MODAL_TASKS" });
+    setIsOpen(store.getState().tasks.isOpenModalTasks);
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -61,23 +89,20 @@ export default function ModalCreateTask() {
     defaultValues: {
       title: "",
       description: "",
-      dueDate: "",
     },
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-    fetch("/api/todo/tasks", {
-      method: "POST",
-      body: JSON.stringify(values),
-    }).then(async (res) => {
-      const req = await res.json();
-      console.log(req);
-      form.reset();
-      setIsOpen(false);
+
+    const date = new Date(values.dueDate).toISOString();
+
+    execute({
+      title: values.title,
+      description: values.description,
+      dueDate: date,
     });
   }
 
@@ -85,11 +110,8 @@ export default function ModalCreateTask() {
     <Dialog open={isOpen} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle>Create a task</DialogTitle>
+          <DialogDescription>Fill the mising gaps</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -130,28 +152,17 @@ export default function ModalCreateTask() {
               name="dueDate"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Date</FormLabel>
                   <FormControl>
-                    <Input
-                      type="date"
-                      value={field.value}
-                      onChange={(e) => {
-                        const date = new Date(e.target.value);
-                        if (!Number.isNaN(date.getTime())) {
-                          field.onChange(date.toISOString().split("T")[0]);
-                        } else {
-                          field.onChange("");
-                        }
-                      }}
-                    />
+                    <CalendarField {...field} />
                   </FormControl>
                   <FormDescription>
-                    This is your public display name.
+                    This is the description of your task.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
             <Button type="submit">Submit</Button>
           </form>
         </Form>
