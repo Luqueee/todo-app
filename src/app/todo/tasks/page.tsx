@@ -21,7 +21,7 @@ export default async function TasksPage() {
           <ContextMenu key={task._id}>
             <ContextMenuTrigger>
               <Link href={`/todo/tasks/${task._id}`}>
-                <Card className="relative">
+                <Card className="relative min-h-32">
                   <CardHeader>
                     <CardTitle>{task.title}</CardTitle>
                   </CardHeader>

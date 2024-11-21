@@ -1,9 +1,10 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { NavSidebar } from "./components/Navs/SideBar";
 import { cookies } from "next/headers";
-import ModalCreateTask from "./components/Modals/ModalCreateTask";
 import { connectDB } from "@/lib/db";
 import TaskNav from "./tasks/components/TaskNav";
+import { ModalCreateCategory } from "./components/Modals/modalCreateCategory";
+import { ModalCreateTask } from "./components/Modals/modalCreateTask";
 
 export default async function Layout({
   children,
@@ -27,6 +28,7 @@ export default async function Layout({
         </div>
       </main>
       <ModalCreateTask />
+      <ModalCreateCategory />
     </SidebarProvider>
   );
 }

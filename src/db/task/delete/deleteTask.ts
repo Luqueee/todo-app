@@ -13,10 +13,7 @@ export default async function DeleteTask({
   await connectDB();
   if (session) {
     try {
-      await Tasks.updateOne(
-        { username: session.user?.name },
-        { $pull: { tasks: { _id: id } } }
-      );
+      await Tasks.findByIdAndDelete({ username: session.user?.name, _id: id });
       return {
         res: "success",
         success: true,

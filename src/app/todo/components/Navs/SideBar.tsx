@@ -22,6 +22,8 @@ import NavUser from "./NavUser";
 import NavTasks from "./NavTasks";
 import { FindTasks } from "@/db/task/find";
 import type { Task } from "@/db/task/schema";
+import { GetCategories } from "@/db/category/get";
+import NavCategories from "./NavCategories";
 
 // Menu items.
 
@@ -31,6 +33,9 @@ export async function NavSidebar() {
   if (!session?.user) redirect("/profile/signin");
 
   const tasks: Task[] = (await FindTasks({ session })) || [];
+  const categories = (await GetCategories({ session })) || [];
+
+  console.log("categories", categories);
 
   return (
     <Sidebar variant="floating" collapsible="icon">
@@ -58,10 +63,20 @@ export async function NavSidebar() {
                 </SidebarMenuButton>
                 <SidebarMenuBadge>3</SidebarMenuBadge>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/todo/categories">
+                    <ClipboardList />
+                    <span>Categories</span>
+                  </Link>
+                </SidebarMenuButton>
+                <SidebarMenuBadge>3</SidebarMenuBadge>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         <NavTasks tasks={tasks} />
+        <NavCategories categories={categories} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser session={session} />

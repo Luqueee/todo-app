@@ -1,22 +1,23 @@
 "use server";
 import mongoose from "mongoose";
 import Tasks, { type Task } from "../schema";
-import type { Session } from "next-auth";
+import { auth } from "@/auth";
 
-export default async function CreateTask({
-  task,
-  session,
-}: {
-  task: Task;
-  session: Session;
-}) {
+export default async function CreateNewTask({ task }: { task: Task }) {
   try {
+    const session = await auth();
+
     console.log("createTask", session, task);
     const newTask = new Tasks(
       {
         username: session?.user?.name,
         email: session?.user?.email,
-        tasks: [task],
+        title: task.title,
+        description: task.description || "",
+        dueDate: task.dueDate,
+        isCompleted: task?.isCompleted || false,
+        content: task?.content || "",
+        category: task?.category || "General",
       },
       {
         onerror: (error: Error) => {
@@ -24,13 +25,20 @@ export default async function CreateTask({
         },
       }
     );
-    newTask._id = newTask._id || new mongoose.Types.ObjectId();
-
-    console.log("New task:", newTask);
+    newTask._id =
+      newTask._id || (new mongoose.Types.ObjectId() as unknown as string);
 
     await newTask.save();
+
+    return {
+      success: true,
+      message: "Task created successfully",
+    };
   } catch (error) {
     console.error("Error creating task:", error);
-    return undefined;
+    return {
+      success: false,
+      message: "Task creation failed",
+    };
   }
 }

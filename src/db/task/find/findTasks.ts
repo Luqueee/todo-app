@@ -11,13 +11,10 @@ export default async function FindTasks({ session }: { session: Session }) {
   await connectDB();
 
   try {
-    const userTasks = await Tasks.findOne({ email: session.user.email });
-    const tasks = userTasks?.tasks || [];
-
-    console.log("Fetched tasks:", userTasks);
+    const userTasks = await Tasks.find({ email: session.user.email });
 
     // Format the tasks to match the required structure
-    return tasks.map((task) => ({
+    return userTasks?.map((task) => ({
       _id: task._id?.toString(), // Convert ObjectId to string
       title: task.title,
       description: task.description || "",

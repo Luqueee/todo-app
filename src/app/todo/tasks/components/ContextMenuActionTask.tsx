@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/context-menu";
 
 import { useAction } from "next-safe-action/hooks";
-import { deleteTaskAction } from "../actions/deleteTaskAction";
+import { deleteTaskAction } from "../../actions/deleteTaskAction";
 import { useToast } from "@/hooks/use-toast";
 
 interface MenuActionTaskProps {

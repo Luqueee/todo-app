@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="">
       <SignIn />
-      <Link href="/dashboard">Dashboard</Link>
+      <Link href="/todo/dashboard">Dashboard</Link>
     </div>
   );
 }

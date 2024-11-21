@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import { ReduxProvider } from "@/redux/ReduxProvider";
 import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
@@ -30,7 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-hidden h-full max-h-screen max-w-screen w-full`}
       >
-        <ReduxProvider>{children}</ReduxProvider>
+        {children}
         <Toaster />
       </body>
     </html>

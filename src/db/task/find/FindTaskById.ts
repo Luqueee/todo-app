@@ -7,17 +7,25 @@ export default async function FindTaskById({
 }: {
   session: Session;
   id: string;
-}): Promise<Task | null | undefined> {
+}): Promise<Task | null> {
   console.log(id);
   const task = await Tasks.findOne({
     email: session?.user?.email,
+    _id: id,
   }).lean();
 
   if (!task) {
     return null;
   }
 
-  return task.tasks.find((task) => task._id?.toString() === id);
+  return {
+    _id: task._id?.toString(),
+    title: task.title,
+    description: task.description || "",
+    dueDate: task.dueDate,
+    isCompleted: task.isCompleted || false,
+    content: task.content || "",
+  };
 
   //tood: find task by id
 }
