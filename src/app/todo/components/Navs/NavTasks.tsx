@@ -29,10 +29,26 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import useTaskStore from "@/stores/taskStore";
+import { useShallow } from "zustand/react/shallow";
+import { ContextMenuLabel } from "@radix-ui/react-context-menu";
 
 export default function NavTasks({ tasks }: { tasks: Task[] }) {
   const { handleModalTasks } = useModal();
   const { executeTask } = useDelete();
+  const taskStore = useTaskStore((state) => state);
+
+  const handleEditTask = (task: Task) => {
+    taskStore.setTask({
+      id: task._id as string,
+      title: task.title,
+      description: task.description ?? "",
+      dueDate: task.dueDate,
+      completed: task.isCompleted as boolean,
+      category: task.category as string,
+    });
+    handleModalTasks();
+  };
 
   return (
     <Collapsible defaultOpen className="group/collapsible">
@@ -62,7 +78,7 @@ export default function NavTasks({ tasks }: { tasks: Task[] }) {
                       {/* <SidebarMenuBadge>3</SidebarMenuBadge> */}
                     </SidebarMenuItem>
                   </ContextMenuTrigger>
-                  <ContextMenuContent className="w-64">
+                  <ContextMenuContent className="w-fit">
                     <ContextMenuItem
                       onClick={() =>
                         executeTask({
@@ -71,6 +87,9 @@ export default function NavTasks({ tasks }: { tasks: Task[] }) {
                       }
                     >
                       Delete
+                    </ContextMenuItem>
+                    <ContextMenuItem onClick={() => handleEditTask(task)}>
+                      Edit
                     </ContextMenuItem>
                   </ContextMenuContent>
                 </ContextMenu>

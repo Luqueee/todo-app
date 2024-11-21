@@ -27,6 +27,7 @@
     "@tiptap/starter-kit": "^2.10.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "lucide-react": "^0.460.0",
     "mongodb": "^6.10.0",

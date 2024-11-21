@@ -11,13 +11,15 @@ const schema = z.object({
   }),
   description: z.string().optional(),
   dueDate: z.string(),
+  id: z.string().optional(),
 });
 
 export const createTaskAction = actionClient
   .schema(schema)
-  .action(async ({ parsedInput: { title, description, dueDate } }) => {
+  .action(async ({ parsedInput: { title, description, dueDate, id } }) => {
     const result = await CreateNewTask({
       task: {
+        _id: id,
         title,
         description,
         dueDate,

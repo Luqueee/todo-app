@@ -8,24 +8,29 @@ export default async function FindTaskById({
   session: Session;
   id: string;
 }): Promise<Task | null> {
-  console.log(id);
-  const task = await Tasks.findOne({
-    email: session?.user?.email,
-    _id: id,
-  }).lean();
+  try {
+    console.log(id);
+    const task = await Tasks.findOne({
+      email: session?.user?.email,
+      _id: id,
+    }).lean();
 
-  if (!task) {
+    if (!task) {
+      return null;
+    }
+
+    return {
+      _id: task._id?.toString(),
+      title: task.title,
+      description: task.description || "",
+      dueDate: task.dueDate,
+      isCompleted: task.isCompleted || false,
+      content: task.content || "",
+    };
+
+    //tood: find task by id
+  } catch (error) {
+    console.error("Error fetching task:", error);
     return null;
   }
-
-  return {
-    _id: task._id?.toString(),
-    title: task.title,
-    description: task.description || "",
-    dueDate: task.dueDate,
-    isCompleted: task.isCompleted || false,
-    content: task.content || "",
-  };
-
-  //tood: find task by id
 }

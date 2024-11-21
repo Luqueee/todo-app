@@ -41,7 +41,9 @@ const CalendarField = React.forwardRef<
               !value && "text-muted-foreground"
             )}
           >
-            {value ? format(value, "PPP") : format(new Date(), "PPP")}
+            {value instanceof Date && !Number.isNaN(value.getTime())
+              ? format(value, "PPP")
+              : format(new Date(), "PPP")}
             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
           </Button>
         </FormControl>

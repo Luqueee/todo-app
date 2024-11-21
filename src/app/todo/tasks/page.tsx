@@ -1,3 +1,4 @@
+"use server";
 import { FindTasks } from "@/db/task/find";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
@@ -12,12 +13,13 @@ export default async function TasksPage() {
   if (!session?.user) return redirect("/profile/signin");
 
   const tasksResult = await FindTasks({ session });
-  const tasks = tasksResult || [];
+  console.log("tasksResult", tasksResult);
+  if (!tasksResult) return redirect("/todo/tasks");
 
   return (
     <div>
       <div className="grid grid-cols-3 gap-4">
-        {tasks.map((task) => (
+        {tasksResult.map((task) => (
           <ContextMenu key={task._id}>
             <ContextMenuTrigger>
               <Link href={`/todo/tasks/${task._id}`}>

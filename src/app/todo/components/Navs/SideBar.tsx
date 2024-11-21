@@ -24,6 +24,7 @@ import { FindTasks } from "@/db/task/find";
 import type { Task } from "@/db/task/schema";
 import { GetCategories } from "@/db/category/get";
 import NavCategories from "./NavCategories";
+import NavItemSearch from "./NavItemSearch";
 
 // Menu items.
 
@@ -42,9 +43,10 @@ export async function NavSidebar() {
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Menus</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <NavItemSearch />
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link href="/todo/dashboard">
@@ -52,8 +54,9 @@ export async function NavSidebar() {
                     <span>Home</span>
                   </Link>
                 </SidebarMenuButton>
-                <SidebarMenuAction className="peer-data-[active=true]/menu-button:opacity-100" />
+                {/* <SidebarMenuAction className="peer-data-[active=true]/menu-button:opacity-100" /> */}
               </SidebarMenuItem>
+
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link href="/todo/tasks">
@@ -61,7 +64,7 @@ export async function NavSidebar() {
                     <span>Tasks</span>
                   </Link>
                 </SidebarMenuButton>
-                <SidebarMenuBadge>3</SidebarMenuBadge>
+                <SidebarMenuBadge>{tasks.length}</SidebarMenuBadge>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>

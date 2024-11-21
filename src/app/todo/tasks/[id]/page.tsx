@@ -19,6 +19,8 @@ export default async function Task({ params }: { params: { id: string } }) {
 
   console.log(task);
 
+  if (!task) return redirect("/todo/tasks");
+
   return (
     <div className="mt-8 ">
       <h1 className="text-4xl">{task?.title}</h1>
