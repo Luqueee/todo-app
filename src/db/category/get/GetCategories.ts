@@ -1,13 +1,11 @@
 "use server";
+import { auth } from "@/auth";
 import Categories, { type CategoryType } from "../schema";
 import { connectDB } from "@/lib/db";
-import type { Session } from "next-auth";
 
-export default async function GetCategories({
-  session,
-}: {
-  session: Session | null;
-}): Promise<CategoryType[] | null> {
+export default async function GetCategories(): Promise<CategoryType[] | null> {
+  const session = await auth();
+
   if (!session?.user?.email) {
     return [];
   }
@@ -21,6 +19,21 @@ export default async function GetCategories({
 
     const categories_result = categories?.categories;
     if (!categories_result) return null;
+
+    categories_result.push({
+      name: "General",
+      description: "General",
+    });
+
+    categories_result.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
 
     return categories_result?.map((category) => ({
       _id: category._id?.toString(),

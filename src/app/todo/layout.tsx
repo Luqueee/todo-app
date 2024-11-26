@@ -5,7 +5,7 @@ import { connectDB } from "@/lib/db";
 import TaskNav from "./tasks/components/TaskNav";
 import { ModalCreateCategory } from "./components/Modals/modalCreateCategory";
 import { ModalCreateTask } from "./components/Modals/modalCreateTask";
-import { CommandDialogTodo } from "./components/CommandTodo";
+import { GetCategories } from "@/db/category/get";
 
 export default async function Layout({
   children,
@@ -14,7 +14,7 @@ export default async function Layout({
 }) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
-
+  const categories = await GetCategories();
   await connectDB();
 
   return (
@@ -28,9 +28,8 @@ export default async function Layout({
           {children}
         </div>
       </main>
-      <ModalCreateTask />
+      <ModalCreateTask categories={categories} />
       <ModalCreateCategory />
-      <CommandDialogTodo />
     </SidebarProvider>
   );
 }

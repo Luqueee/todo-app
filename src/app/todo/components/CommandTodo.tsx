@@ -1,18 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  Book,
-  BookMarked,
-  Calculator,
-  Calendar,
-  ClipboardList,
-  CreditCard,
-  Home,
-  Settings,
-  Smile,
-  User,
-} from "lucide-react";
+import { BookMarked, ClipboardList, Home, Settings, User } from "lucide-react";
 
 import {
   CommandDialog,
@@ -29,9 +18,16 @@ import { useShallow } from "zustand/react/shallow";
 import Link from "next/link";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { useModal } from "../hooks";
+import type { Task } from "@/db/task/schema";
+import type { CategoryType } from "@/db/category/schema";
 
-export function CommandDialogTodo() {
-  const [open, setOpen] = React.useState(false);
+export function CommandDialogTodo({
+  tasks,
+  categories,
+}: {
+  tasks: Task[] | null;
+  categories: CategoryType[] | null;
+}) {
   const { handleModalTasks, handleModalCategory } = useModal();
   const modalStore = useModalStore(useShallow((state) => state));
 
@@ -39,7 +35,7 @@ export function CommandDialogTodo() {
     const down = (e: KeyboardEvent) => {
       if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        handleChange();
       }
     };
 
@@ -53,12 +49,7 @@ export function CommandDialogTodo() {
     modalStore.handleModalIsOpenSearch();
   };
 
-  React.useEffect(() => {
-    setOpen(modalStore.isOpenModalSearch);
-  }, [modalStore]);
-
-  const handleChange = (value: boolean) => {
-    setOpen(value);
+  const handleChange = () => {
     modalStore.handleModalIsOpenSearch();
   };
 
@@ -71,7 +62,10 @@ export function CommandDialogTodo() {
 
   return (
     <>
-      <CommandDialog open={open} onOpenChange={handleChange}>
+      <CommandDialog
+        open={modalStore.isOpenModalSearch}
+        onOpenChange={handleChange}
+      >
         <DialogTitle className="sr-only">Command</DialogTitle>
         <DialogDescription className="sr-only">Description</DialogDescription>
         <CommandInput placeholder="Type a command or search..." />
@@ -80,7 +74,7 @@ export function CommandDialogTodo() {
           <CommandGroup heading="Suggestions">
             <CommandItem asChild>
               <Link
-                onClick={setOpenModal}
+                onClick={handleChange}
                 href={"/todo/dashboard"}
                 className="w-full flex items-center gap-4 hover:cursor-pointer"
                 role="menuitem"
@@ -91,7 +85,7 @@ export function CommandDialogTodo() {
             </CommandItem>
             <CommandItem asChild>
               <Link
-                onClick={setOpenModal}
+                onClick={handleChange}
                 href={"/todo/tasks"}
                 className="w-full flex items-center gap-4 hover:cursor-pointer"
                 role="menuitem"
@@ -107,6 +101,7 @@ export function CommandDialogTodo() {
                   handleModalTasks();
                 })
               }
+              asChild
             >
               <button
                 onClick={() => {
@@ -114,7 +109,7 @@ export function CommandDialogTodo() {
                   handleModalTasks();
                 }}
                 type="button"
-                className="w-full flex items-center gap-4"
+                className="w-full flex items-center gap-4 hover:cursor-pointer"
                 role="menuitem"
               >
                 <ClipboardList />
@@ -128,6 +123,7 @@ export function CommandDialogTodo() {
                   handleModalCategory();
                 })
               }
+              asChild
             >
               <button
                 onClick={() => {
@@ -135,7 +131,7 @@ export function CommandDialogTodo() {
                   handleModalCategory();
                 }}
                 type="button"
-                className="w-full flex items-center gap-4"
+                className="w-full flex items-center gap-4 hover:cursor-pointer"
                 role="menuitem"
               >
                 <BookMarked />
@@ -144,17 +140,43 @@ export function CommandDialogTodo() {
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />
+          <CommandGroup heading="Tasks">
+            {tasks?.map((task) => (
+              <CommandItem key={task._id as string} asChild>
+                <Link
+                  href={`/todo/tasks/${task._id}`}
+                  onClick={handleChange}
+                  role="menuitem"
+                  className="hover:cursor-pointer"
+                >
+                  <ClipboardList />
+                  <span>{task.title}</span>
+                </Link>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+          <CommandGroup heading="Categories">
+            {categories?.map((category) => (
+              <CommandItem key={category._id as string} asChild>
+                <Link
+                  href={`/todo/categories/${category._id}`}
+                  onClick={handleChange}
+                  role="menuitem"
+                  className="hover:cursor-pointer"
+                >
+                  <BookMarked />
+                  <span>{category.name}</span>
+                </Link>
+              </CommandItem>
+            ))}
+          </CommandGroup>
           <CommandGroup heading="Settings">
             <CommandItem role="menuitem">
               <User />
               <span>Profile</span>
               <CommandShortcut>⌘P</CommandShortcut>
             </CommandItem>
-            <CommandItem role="menuitem">
-              <CreditCard />
-              <span>Billing</span>
-              <CommandShortcut>⌘B</CommandShortcut>
-            </CommandItem>
+
             <CommandItem role="menuitem">
               <Settings />
               <span>Settings</span>

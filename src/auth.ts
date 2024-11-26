@@ -16,9 +16,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
-  pages: {
-    signIn: "/profile/signin",
-  },
+  // pages: {
+  //   signIn: "/profile/signin",
+  // },
   callbacks: {
     authorized: async ({ auth }) => {
       // Logged in users are authenticated, otherwise redirect to login page

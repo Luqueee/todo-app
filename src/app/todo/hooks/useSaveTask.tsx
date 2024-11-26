@@ -1,12 +1,12 @@
 "use client";
 
 import { useAction } from "next-safe-action/hooks";
-import { saveFileAction } from "../../../actions/saveFileAction";
+import { saveFileAction } from "@/app/todo/actions/saveFileAction";
 import { useCallback, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useDebouncedSync } from "@/hooks/useDebounceSync";
 
-const useSave = ({
+const useSaveTask = ({
   contentInitial = "",
   id,
 }: {
@@ -24,14 +24,12 @@ const useSave = ({
       if (data.data?.success === true) {
         toast({
           title: "Task updated successfully",
-          description: "Task updated successfully",
         });
       }
 
       if (data.data?.success === false) {
         toast({
           title: "Task update failed",
-          description: "Task update failed",
           variant: "destructive",
         });
       }
@@ -40,7 +38,6 @@ const useSave = ({
       setIsSaving(false);
       toast({
         title: "Task update failed",
-        description: "An error occurred while updating the task",
         variant: "destructive",
       });
     },
@@ -50,14 +47,12 @@ const useSave = ({
     if (content === contentInitial) {
       toast({
         title: "No changes detected",
-        description: "The content is the same as before",
         variant: "default",
       });
       return;
     }
 
     setIsSaving(true);
-    console.log(content);
     execute({ content: content, id: id });
   }, [content, contentInitial, id]);
 
@@ -73,4 +68,4 @@ const useSave = ({
   };
 };
 
-export default useSave;
+export default useSaveTask;

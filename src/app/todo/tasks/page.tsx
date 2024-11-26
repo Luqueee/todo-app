@@ -13,7 +13,6 @@ export default async function TasksPage() {
   if (!session?.user) return redirect("/profile/signin");
 
   const tasksResult = await FindTasks({ session });
-  console.log("tasksResult", tasksResult);
   if (!tasksResult) return redirect("/todo/tasks");
 
   return (
@@ -36,7 +35,7 @@ export default async function TasksPage() {
                 </Card>
               </Link>
             </ContextMenuTrigger>
-            <MenuActionTask id={task._id?.toString()} />
+            <MenuActionTask id={task._id?.toString()} task={task} />
           </ContextMenu>
         ))}
       </div>

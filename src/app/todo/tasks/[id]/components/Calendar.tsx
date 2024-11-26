@@ -25,7 +25,7 @@ const CalendarField = React.forwardRef<HTMLButtonElement, CalendarFieldProps>(
             ref={ref}
             variant={"outline"}
             className={cn(
-              "w-[240px] pl-3 text-left font-normal",
+              "w-full pl-3 text-left font-normal",
               !value && "text-muted-foreground"
             )}
           >
@@ -33,7 +33,7 @@ const CalendarField = React.forwardRef<HTMLButtonElement, CalendarFieldProps>(
             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-fit mr-4 p-0" align="start">
           <Calendar
             mode="single"
             selected={value}

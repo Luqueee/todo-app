@@ -8,13 +8,17 @@ import {
 import { useAction } from "next-safe-action/hooks";
 import { deleteTaskAction } from "../../actions/deleteTaskAction";
 import { useToast } from "@/hooks/use-toast";
+import { useModal } from "../../hooks";
+import type { Task } from "@/db/task/schema";
 
 interface MenuActionTaskProps {
   id: string | undefined;
+  task: Task;
 }
 
-export default function MenuActionTask({ id }: MenuActionTaskProps) {
+export default function MenuActionTask({ id, task }: MenuActionTaskProps) {
   const { toast } = useToast();
+  const { handleEditTask } = useModal();
 
   const { execute } = useAction(deleteTaskAction, {
     onSuccess: (data) => {
@@ -36,7 +40,7 @@ export default function MenuActionTask({ id }: MenuActionTaskProps) {
   });
 
   return (
-    <ContextMenuContent className="w-64">
+    <ContextMenuContent className="w-fit">
       {id && (
         <ContextMenuItem
           onSelect={() =>
@@ -48,6 +52,9 @@ export default function MenuActionTask({ id }: MenuActionTaskProps) {
           Delete
         </ContextMenuItem>
       )}
+      <ContextMenuItem onClick={() => handleEditTask(task)}>
+        Edit
+      </ContextMenuItem>
     </ContextMenuContent>
   );
 }

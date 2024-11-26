@@ -7,7 +7,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./Toolbar";
 import { Button } from "@/components/ui/button";
 
-import useSave from "../hooks/useSave";
+import useSaveTask from "@/app/todo/hooks/useSaveTask";
 
 export default function Editor({
   id,
@@ -16,7 +16,7 @@ export default function Editor({
   id: string;
   content_initial?: string;
 }) {
-  const { setContent, isSaving, content, handleSave } = useSave({
+  const { setContent, isSaving, content, handleSave } = useSaveTask({
     contentInitial: content_initial,
     id,
   });

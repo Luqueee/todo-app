@@ -6,9 +6,7 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -16,75 +14,88 @@ import {
 import { Home, ClipboardList } from "lucide-react";
 
 import Link from "next/link";
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
 import NavUser from "./NavUser";
 import NavTasks from "./NavTasks";
 import { FindTasks } from "@/db/task/find";
-import type { Task } from "@/db/task/schema";
 import { GetCategories } from "@/db/category/get";
 import NavCategories from "./NavCategories";
 import NavItemSearch from "./NavItemSearch";
-
-// Menu items.
+import { CommandDialogTodo } from "../CommandTodo";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 export async function NavSidebar() {
   const session = await auth();
   //console.log(session);
   if (!session?.user) redirect("/profile/signin");
 
-  const tasks: Task[] = (await FindTasks({ session })) || [];
-  const categories = (await GetCategories({ session })) || [];
-
-  console.log("categories", categories);
+  const tasks = (await FindTasks()) || [];
+  const categories = (await GetCategories()) || [];
 
   return (
-    <Sidebar variant="floating" collapsible="icon">
-      <SidebarHeader />
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Menus</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <NavItemSearch />
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/todo/dashboard">
-                    <Home />
-                    <span>Home</span>
-                  </Link>
-                </SidebarMenuButton>
-                {/* <SidebarMenuAction className="peer-data-[active=true]/menu-button:opacity-100" /> */}
-              </SidebarMenuItem>
+    <>
+      <CommandDialogTodo tasks={tasks} categories={categories} />
+      <Sidebar variant="floating" collapsible="icon" title="holaaa">
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Menus</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <NavItemSearch />
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href="/todo/dashboard">
+                      <Home />
+                      <span>Home</span>
+                    </Link>
+                  </SidebarMenuButton>
+                  {/* <SidebarMenuAction className="peer-data-[active=true]/menu-button:opacity-100" /> */}
+                </SidebarMenuItem>
 
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/todo/tasks">
-                    <ClipboardList />
-                    <span>Tasks</span>
-                  </Link>
-                </SidebarMenuButton>
-                <SidebarMenuBadge>{tasks.length}</SidebarMenuBadge>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/todo/categories">
-                    <ClipboardList />
-                    <span>Categories</span>
-                  </Link>
-                </SidebarMenuButton>
-                <SidebarMenuBadge>3</SidebarMenuBadge>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <NavTasks tasks={tasks} />
-        <NavCategories categories={categories} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser session={session} />
-      </SidebarFooter>
-      {/* <SidebarRail /> */}
-    </Sidebar>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href="/todo/tasks">
+                      <ClipboardList />
+                      <span>Tasks</span>
+                    </Link>
+                  </SidebarMenuButton>
+                  <SidebarMenuBadge>{tasks.length}</SidebarMenuBadge>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href="/todo/categories">
+                      <ClipboardList />
+                      <span>Categories</span>
+                    </Link>
+                  </SidebarMenuButton>
+                  <SidebarMenuBadge>{categories.length}</SidebarMenuBadge>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+          <NavTasks tasks={tasks} />
+          <NavCategories categories={categories} />
+        </SidebarContent>
+        <SidebarFooter title="holaa">
+          <NavUser session={session}>
+            <DropdownMenuItem asChild className="p-0">
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut();
+                }}
+                className="w-full h-full"
+              >
+                <button type="submit" className="w-full h-full flex py-2 px-2">
+                  Signout
+                </button>
+              </form>
+            </DropdownMenuItem>
+          </NavUser>
+        </SidebarFooter>
+        {/* <SidebarRail /> */}
+      </Sidebar>
+    </>
   );
 }

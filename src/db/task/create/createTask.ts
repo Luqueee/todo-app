@@ -2,19 +2,23 @@
 import mongoose from "mongoose";
 import Tasks, { type Task } from "../schema";
 import { auth } from "@/auth";
+import { formatDate } from "date-fns";
 
 export default async function CreateNewTask({ task }: { task: Task }) {
   try {
     const session = await auth();
 
-    console.log("createTask", session, task);
     if (task._id !== "") {
       const existingTask = await Tasks.findOne({ _id: task._id });
+
+      const formattedDate = formatDate(task.dueDate as string, "yyyy-MM-dd");
+
+      console.log("existingTask", formattedDate);
 
       if (existingTask) {
         existingTask.title = task.title;
         existingTask.description = task.description || "";
-        existingTask.dueDate = task.dueDate;
+        existingTask.dueDate = formattedDate;
         existingTask.isCompleted = task?.isCompleted || false;
         existingTask.content = task?.content || "";
         existingTask.category = task?.category || "General";
@@ -27,13 +31,17 @@ export default async function CreateNewTask({ task }: { task: Task }) {
       }
     }
 
+    const formattedDate = formatDate(task.dueDate as string, "yyyy-MM-dd");
+
+    console.log("existingTask", formattedDate);
+
     const newTask = new Tasks(
       {
         username: session?.user?.name,
         email: session?.user?.email,
         title: task.title,
         description: task.description || "",
-        dueDate: task.dueDate,
+        dueDate: formattedDate,
         isCompleted: task?.isCompleted || false,
         content: task?.content || "",
         category: task?.category || "General",

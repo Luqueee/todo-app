@@ -32,23 +32,11 @@ import {
 import useTaskStore from "@/stores/taskStore";
 import { useShallow } from "zustand/react/shallow";
 import { ContextMenuLabel } from "@radix-ui/react-context-menu";
+import MenuActionTask from "../../tasks/components/ContextMenuActionTask";
 
 export default function NavTasks({ tasks }: { tasks: Task[] }) {
-  const { handleModalTasks } = useModal();
+  const { handleModalTasks, handleEditTask } = useModal();
   const { executeTask } = useDelete();
-  const taskStore = useTaskStore((state) => state);
-
-  const handleEditTask = (task: Task) => {
-    taskStore.setTask({
-      id: task._id as string,
-      title: task.title,
-      description: task.description ?? "",
-      dueDate: task.dueDate,
-      completed: task.isCompleted as boolean,
-      category: task.category as string,
-    });
-    handleModalTasks();
-  };
 
   return (
     <Collapsible defaultOpen className="group/collapsible">
@@ -78,20 +66,7 @@ export default function NavTasks({ tasks }: { tasks: Task[] }) {
                       {/* <SidebarMenuBadge>3</SidebarMenuBadge> */}
                     </SidebarMenuItem>
                   </ContextMenuTrigger>
-                  <ContextMenuContent className="w-fit">
-                    <ContextMenuItem
-                      onClick={() =>
-                        executeTask({
-                          id: task._id as string,
-                        })
-                      }
-                    >
-                      Delete
-                    </ContextMenuItem>
-                    <ContextMenuItem onClick={() => handleEditTask(task)}>
-                      Edit
-                    </ContextMenuItem>
-                  </ContextMenuContent>
+                  <MenuActionTask id={task._id?.toString()} task={task} />
                 </ContextMenu>
               ))}
             </SidebarMenu>

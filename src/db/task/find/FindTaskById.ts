@@ -9,7 +9,6 @@ export default async function FindTaskById({
   id: string;
 }): Promise<Task | null> {
   try {
-    console.log(id);
     const task = await Tasks.findOne({
       email: session?.user?.email,
       _id: id,

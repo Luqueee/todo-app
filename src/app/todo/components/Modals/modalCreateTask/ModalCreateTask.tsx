@@ -28,6 +28,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Link from "next/link";
+import type { CategoryType } from "@/db/category/schema";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -35,9 +44,14 @@ const formSchema = z.object({
   }),
   description: z.string().optional(),
   dueDate: z.date(),
+  category: z.string(),
 });
 
-export default function ModalCreateTask() {
+export default function ModalCreateTask({
+  categories,
+}: {
+  categories: CategoryType[] | null;
+}) {
   const { toast } = useToast();
   const { execute } = useAction(createTaskAction, {
     onSuccess: (data) => {
@@ -71,6 +85,7 @@ export default function ModalCreateTask() {
     defaultValues: {
       title: "",
       description: "",
+      category: "General",
       dueDate: new Date(),
     },
   });
@@ -82,7 +97,7 @@ export default function ModalCreateTask() {
         id: "",
         title: "",
         description: "",
-        dueDate: "",
+        dueDate: new Date() as unknown as string,
         completed: false,
         category: "",
       });
@@ -90,11 +105,13 @@ export default function ModalCreateTask() {
   }, [modalStore]);
 
   useEffect(() => {
-    console.log("taskStore", taskStore.currentTask);
     form.reset({
       title: taskStore.currentTask.title,
       description: taskStore.currentTask.description,
-      dueDate: taskStore.currentTask.dueDate as unknown as Date,
+      dueDate: taskStore.currentTask.dueDate
+        ? new Date(taskStore.currentTask.dueDate)
+        : new Date(),
+      category: taskStore.currentTask.category,
     });
   }, [taskStore.currentTask]);
 
@@ -107,17 +124,20 @@ export default function ModalCreateTask() {
 
     const date = new Date(values.dueDate).toISOString();
 
+    console.log(values);
+
     execute({
       id: taskStore.currentTask.id,
       title: values.title,
       description: values.description,
       dueDate: date,
+      category: values.category,
     });
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent title="aaa">
         <DialogHeader>
           <DialogTitle>Create a task</DialogTitle>
           <DialogDescription>Fill the missing gaps</DialogDescription>
@@ -166,6 +186,37 @@ export default function ModalCreateTask() {
                   </FormControl>
                   <FormDescription>
                     This is the description of your task.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue="General">
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categories?.map((category) => (
+                        <SelectItem
+                          key={category._id as string}
+                          value={category.name}
+                        >
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    You can manage email addresses in your{" "}
+                    <Link href="/examples/forms">email settings</Link>.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

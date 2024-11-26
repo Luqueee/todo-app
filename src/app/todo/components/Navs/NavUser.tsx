@@ -17,8 +17,16 @@ import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import type { Session } from "next-auth";
 import { redirect } from "next/navigation";
+import { signOut } from "@/auth";
+import SignOut from "./signOut";
 
-export default function NavUser({ session }: { session: Session }) {
+export default function NavUser({
+  session,
+  children,
+}: {
+  session: Session;
+  children: React.ReactNode;
+}) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -41,6 +49,7 @@ export default function NavUser({ session }: { session: Session }) {
           <DropdownMenuContent
             side="right"
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 mb-3 rounded-lg"
+            title="holaaa"
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
@@ -58,17 +67,7 @@ export default function NavUser({ session }: { session: Session }) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="hover:cursor-pointer"
-              onClick={() => redirect("/profile")}
-            >
-              <UserRoundPen />
-              <span>Account</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <LogOut />
-              <span>Log out</span>
-            </DropdownMenuItem>
+            {children}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
