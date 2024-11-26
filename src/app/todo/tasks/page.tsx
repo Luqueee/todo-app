@@ -12,7 +12,7 @@ export default async function TasksPage() {
   const session = await auth();
   if (!session?.user) return redirect("/profile/signin");
 
-  const tasksResult = await FindTasks({ session });
+  const tasksResult = await FindTasks();
   if (!tasksResult) return redirect("/todo/tasks");
 
   return (

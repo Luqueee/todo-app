@@ -5,10 +5,6 @@ import {
   ContextMenuItem,
 } from "@/components/ui/context-menu";
 
-import { useAction } from "next-safe-action/hooks";
-import { deleteTaskAction } from "../../actions/deleteTaskAction";
-import { useToast } from "@/hooks/use-toast";
-import { DeleteCategoryAction } from "../../actions/deleteCategoryAction";
 import { useDelete } from "../../hooks";
 
 interface MenuActionCateogryProps {

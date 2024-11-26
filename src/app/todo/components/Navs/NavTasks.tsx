@@ -10,33 +10,23 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useDelete, useModal } from "../../hooks";
+import { useModal } from "../../hooks";
 
 import { ChevronDown, ClipboardList, Plus } from "lucide-react";
 import Link from "next/link";
 import type { Task } from "@/db/task/schema";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import { useAction } from "next-safe-action/hooks";
-import { deleteTaskAction } from "../../actions/deleteTaskAction";
-import { useToast } from "@/hooks/use-toast";
+import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
+
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import useTaskStore from "@/stores/taskStore";
-import { useShallow } from "zustand/react/shallow";
-import { ContextMenuLabel } from "@radix-ui/react-context-menu";
+
 import MenuActionTask from "../../tasks/components/ContextMenuActionTask";
 
 export default function NavTasks({ tasks }: { tasks: Task[] }) {
-  const { handleModalTasks, handleEditTask } = useModal();
-  const { executeTask } = useDelete();
+  const { handleModalTasks } = useModal();
 
   return (
     <Collapsible defaultOpen className="group/collapsible">

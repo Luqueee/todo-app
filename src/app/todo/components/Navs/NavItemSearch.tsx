@@ -3,7 +3,6 @@
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import useModalStore from "@/stores/modalStore";
 import { Search } from "lucide-react";
-import Link from "next/link";
 import { useShallow } from "zustand/react/shallow";
 
 export default function NavItemSearch() {

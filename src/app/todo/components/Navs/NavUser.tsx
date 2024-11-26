@@ -4,11 +4,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { ChevronsUpDown, LogOut, UserRoundPen } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -16,9 +15,6 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import type { Session } from "next-auth";
-import { redirect } from "next/navigation";
-import { signOut } from "@/auth";
-import SignOut from "./signOut";
 
 export default function NavUser({
   session,

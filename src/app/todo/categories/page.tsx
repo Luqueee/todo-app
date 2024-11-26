@@ -1,25 +1,17 @@
 "use server";
 
-import { auth } from "@/auth";
 import { GetCategories } from "@/db/category/get";
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import Link from "next/link";
-import MenuActionTask from "../tasks/components/ContextMenuActionTask";
 import MenuActionCategory from "./components/ContextMenuActionCategory";
 export default async function CategoriesPage() {
-  const session = await auth();
-
-  const categories = await GetCategories({
-    session,
-  });
+  const categories = await GetCategories();
 
   console.log("categories", categories);
 

@@ -1,4 +1,3 @@
-import type { Task } from "@/db/task/schema";
 import { create } from "zustand";
 
 interface TaskStore {
