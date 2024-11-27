@@ -20,12 +20,14 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <NavSidebar />
-      <main className="w-full h-full">
+      <main className="w-full h-screen overflow-hidden">
         <SidebarTrigger className=" mt-4" />
-        <div className="  p-4 h-full">
-          <TaskNav />
-          <hr className="my-2 bg-border" />
-          {children}
+        <div className="  p-4 grid grid-rows-[auto_1fr] max-h-full overflow-hidden">
+          <div>
+            <TaskNav />
+            <hr className="my-2 bg-border" />
+          </div>
+          <div className=" overflow-y-scroll">{children}</div>
         </div>
       </main>
       <ModalCreateTask categories={categories} />

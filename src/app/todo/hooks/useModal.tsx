@@ -6,6 +6,7 @@ interface ModalTask {
   handleModalTasks: () => void;
   handleModalCategory: () => void;
   handleEditTask: (task: Task) => void;
+  handleCreateTaskOnDate: (date: Date) => void;
 }
 
 const useModal = (): ModalTask => {
@@ -33,10 +34,23 @@ const useModal = (): ModalTask => {
     handleModalTasks();
   };
 
+  const handleCreateTaskOnDate = (date: Date) => {
+    taskStore.setTask({
+      id: "",
+      title: "",
+      description: "",
+      dueDate: date.toISOString(),
+      completed: false,
+      category: "",
+    });
+    handleModalTasks();
+  };
+
   return {
     handleModalTasks,
     handleModalCategory,
     handleEditTask,
+    handleCreateTaskOnDate,
   };
 };
 

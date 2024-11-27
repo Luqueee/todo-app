@@ -1,15 +1,13 @@
 "use client";
 import { Calendar } from "@/components/ui/calendarTodo";
-import { formatDate } from "date-fns";
+//import { formatDate } from "date-fns";
 import { useState } from "react";
 import { createFindTaskAction } from "../../actions/actionFindTasksByDate";
 import { useAction } from "next-safe-action/hooks";
 
-export default function CalendarTodo() {
+export default function CalendarTodo({ tasks_calendar }) {
   const [value, setValue] = useState<Date | null>(null);
-  const [valueFormated, setValueFormated] = useState<string | null>(null);
-
-  const { execute, result } = useAction(createFindTaskAction, {
+  const { execute } = useAction(createFindTaskAction, {
     // onSuccess: (data) => {
     // },
   });
@@ -17,22 +15,23 @@ export default function CalendarTodo() {
   const onChange = (date: unknown) => {
     if (date) {
       setValue(date as unknown as Date);
-      const dateResult = formatDate(date as Date, "yyyy-MM-dd");
-      setValueFormated(dateResult);
+      //const dateResult = formatDate(date as Date, "yyyy-MM-dd");
+      //setValueFormated(dateResult);
       execute({ date: date as Date });
     }
   };
 
   return (
-    <div className="grid grid-cols-1 md:lg:grid-cols-[auto_1fr] gap-4">
+    <div className="grid grid-cols-1 md:lg:grid-cols-1 gap-4 pb-12 pr-4">
       <Calendar
+        tasks={tasks_calendar}
         mode="single"
         selected={value || new Date()}
         onSelect={onChange}
         initialFocus
         className="select-none"
       />
-      <div className="p-4 border w-full h-fit rounded-lg">
+      {/* <div className="p-4 border w-full h-fit rounded-lg">
         <p>{valueFormated}</p>
 
         <div>
@@ -48,7 +47,7 @@ export default function CalendarTodo() {
             );
           })}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

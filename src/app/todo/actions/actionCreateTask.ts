@@ -29,7 +29,7 @@ export const createTaskAction = actionClient
         },
       });
 
-      revalidatePath("/todo/tasks");
+      revalidatePath("/todo/");
 
       return result;
     }
